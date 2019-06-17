@@ -145,8 +145,8 @@
     function getData() {
       console.log("get data");
       $.ajax({
-        //url: 'http://localhost:31234/api/map/information',
-        url: './test.json',
+        url: 'http://localhost:31234/api/map/information',
+        //url: './test.json',
         dataType: 'json',
         success: function (data) {
           console.log(data)
