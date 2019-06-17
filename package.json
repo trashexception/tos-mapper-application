@@ -2,7 +2,7 @@
   "name": "tos-mapper-application",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
