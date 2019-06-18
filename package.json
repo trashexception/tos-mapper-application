@@ -4,10 +4,12 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager ./ tos-mapper-application --platform=win32 --arch=ia32,x64 --out dist --prune"
   },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^5.0.4"
+    "electron": "^5.0.4",
+    "electron-packager": "^13.1.1"
   }
 }
