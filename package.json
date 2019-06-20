@@ -5,11 +5,18 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager ./ tos-mapper-application --platform=win32 --arch=ia32,x64 --out dist --prune"
+    "build": "electron-packager ./ tos-mapper-application --platform=win32 --arch=x64 --out dist --prune --overwrite"
   },
   "license": "ISC",
   "devDependencies": {
     "electron": "^5.0.4",
     "electron-packager": "^13.1.1"
+  },
+  "dependencies": {
+    "current-processes": "^0.2.1",
+    "deasync": "^0.1.15",
+    "dialog": "^0.3.1",
+    "ps-node": "^0.1.6",
+    "sync-request": "^6.1.0"
   }
 }
