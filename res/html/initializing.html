@@ -4,10 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <title>TOS MAP Application</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        h2 {
+            position: relative;
+            color: rgba(255, 255, 255, .3);
+            font-size: 5em;
+            text-align: center;
+        }
+        h2:before {
+            content: attr(data-text);
+            position: absolute;
+            overflow: hidden;
+            max-width: 30em;
+            white-space: nowrap;
+            color: #000;
+            animation: loading 8s infinite ;
+        }
+        @keyframes loading {
+            0% {
+                max-width: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    ~ Please Waitting ~
+    <h2 data-text="TOS MAP Application">TOS MAP Application</h2>
 
 </body>
 

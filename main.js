@@ -64,7 +64,7 @@ function createWindow() {
   win.loadFile("./res/html/main.html"); // and load the index.html of the app.
   win.setMenu(null);  // 메뉴창 제거
 
-  //win.webContents.openDevTools();   // 개발자 도구를 엽니다.
+  // win.webContents.openDevTools();   // 개발자 도구를 엽니다.
 
   win.on('close', function (e) { //   <---- Catch close event
     e.preventDefault();
