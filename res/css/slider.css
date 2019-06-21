@@ -9,7 +9,6 @@
 
   /* Hide default HTML checkbox */
   .switch input {
-    margin-left: 10px;
     display: none;
   }
 

@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-packager ./ tos-mapper-application --platform=win32 --arch=ia32,x64 --out dist --prune --overwrite"
+    "build": "electron-packager ./ tos-mapper-application --platform=win32 --arch=x64 --out dist --prune --overwrite"
   },
   "license": "ISC",
   "devDependencies": {
