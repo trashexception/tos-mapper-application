@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TOS MAP Application</title>
+    <style>
+    </style>
+    <link rel="stylesheet" href="../css/slider.css">
+    <link rel="stylesheet" href="../css/bars.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <!-- 제어용 상단 바-->
+    <div class="top_bar row">
+      <div class="col-5">
+        <span id="ocrImage">
+          <img src="data:image/jpeg;base64,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" />
+        </span>
+      </div>
+      <div class="col-3">
+        <span id="realName"></span>
+      </div>
+      <div class="col">
+        <span>
+          자동 갱신
+        </span>
+        <label class="switch">
+          <input id="slider" type="checkbox" checked="true">
+          <span class="slider round"></span>
+        </label>
+      </div>
+      <div class="col"></div>
+    </div>
+
+    <!-- 컨텐츠 표시 위치-->
+    <div class="page_area row">
+      <div class="col">
+        <webview id="webview" src="" preload="./blank.html" style="display:inline-flex; width:1200px; height:900px">
+        </webview>
+      </div>
+    </div>
+
+    <!--디버깅용 하단 바-->
+    <div class="row_bar text-light bg-dark">
+      <div id="dbg" class="row">
+        <div class="col-5">
+          <span id="ocrMapName"></span>
+        </div>
+        <div class="col-1">
+          <span id="distance"></span>
+        </div>
+        <div class="col-4">
+          <spn id="recomendName"></spn>
+        </div>
+      </div>
+    </div>
+
+    <!-- You can also require other files to run in this process -->
+    <script src="../js/renderer.js"></script>
+    <script>
+      if (typeof module === 'object') {
+        window.module = module; module = undefined;
+      }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
+      </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+      </script>
+    <script>
+      if (window.module) {
+        module = window.module;
+      }
+    </script>
+
+    <!-- user functions -->
+    <script src="../js/Class_Map.js"></script>
+    <script>
+      var check = $("#slider");
+      check.click(function () {
+        check.toggle();
+        stopAndGo();
+      });
+    </script>
+    <script>
+      const intervalTime = 450  //milliseconds
+      var intervalId;
+
+      $(document).ready(function () {
+        stopAndGo();
+      });
+
+      function stopAndGo() {
+        if ($("#slider").is(":checked") == true) {
+          intervalId = setInterval(getData, intervalTime);
+        } else {
+          clearInterval(intervalId);
+        }
+      }
+
+      var candidates = [];
+      var lastKey = null;
+
+      var webview = document.querySelector("#webview");
+      webview.addEventListener("dom-ready", () => { //webview의 로딩이 끝나면
+        console.log("webview ready");
+        let google_ad_css = "\
+          div[class^='google_ad'] { \
+            display: none; \
+          } \
+          div[id^='google_ad'] { \
+            display: none; \
+          } \
+        ";
+        //webview에 css string을 injection 한다.
+        webview.insertCSS(google_ad_css);
+      });
+
+      function getData() {
+        console.log("get data");
+
+        let url_api = "http://localhost:31234/api/map/information";
+        // url_api = "../json/test.json";
+
+        $.ajax({
+          url: url_api,
+          dataType: 'json',
+          success: function (data) {
+            console.log(data)
+            $('#ocrImage > img').attr("src", data.image);
+
+            if (data.code == 0) {
+              $('#ocrMapName').html("read_Ocr" + "[" + data.informations[0].ocrMapName + "]");
+              $('#distance').html("dist." + "(" + data.informations[0].editDistance + ")");
+              $('#recomendName').html("recomend" + "<" + data.informations[0].realName + ">");
+              candidates.push(data.informations);
+              if (candidates.length >= 3) {
+                var flatcandidates = candidates.flat();
+                var map = new Map();
+                for (var i = 0; i < flatcandidates.length; i++) {
+                  var key = flatcandidates[i].realName + "###" + flatcandidates[i].url;
+                  if (flatcandidates[i].editDistance >= flatcandidates[i].realName.length)
+                    continue;
+                  console.log(key);
+                  if (map.containsKey(key)) {
+                    map.put(key, map.get(key) + 1);
+                  }
+                  else
+                    map.put(key, 1);
+
+                  console.log(key + " " + map.get(key) + 1)
+                }
+                var maxCount = 0;
+                var maxKey = null;
+                var keys = map.keys();
+                for (var i = 0; i < keys.length; i++) {
+                  if (maxCount <= map.get(keys[i])) {
+                    maxCount = map.get(keys[i]);
+                    maxKey = keys[i];
+                  }
+                }
+                if (maxCount > 0 && lastKey != maxKey && maxCount >= 3) {
+                  var keyArr = maxKey.split("###");
+                  var key = keyArr[0];
+                  var url = keyArr[1];
+                  $('#webview').attr('src', url);
+                  $('#realName').html(key);
+                  lastKey = maxKey;
+                }
+                candidates = []
+              }
+            } else {
+              candidates = []
+            }
+          },
+          error: function (e) {
+            console.log(e);
+          }
+        })
+      }
+    </script>
+  </body>
+</html>
