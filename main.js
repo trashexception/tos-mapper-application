@@ -32,8 +32,8 @@ function processRun() {
   while (true) {
     if (fs.existsSync(applicationPidFile)) {
       let jvmPid = fs.readFileSync(applicationPidFile, 'utf8');
+      fs.unlinkSync(applicationPidFile);
       if (isRunning(jvmPid)) {
-        fs.unlinkSync(applicationPidFile);
         break;
       }
     }
@@ -64,17 +64,17 @@ function createWindow() {
   win.loadFile("./res/html/main.html"); // and load the index.html of the app.
   win.setMenu(null);  // 메뉴창 제거
 
-  //win.webContents.openDevTools();   // 개발자 도구를 엽니다.
+  // win.webContents.openDevTools();   // 개발자 도구를 엽니다.
 
   win.on('close', function (e) { //   <---- Catch close event
     e.preventDefault();
     console.log("applicationPidFile Path ->", applicationPidFile);
     if (fs.existsSync(applicationPidFile)) {
       let jvmPid = fs.readFileSync(applicationPidFile, 'utf8');
+      fs.unlinkSync(applicationPidFile);
       // the data is passed to the callback in the second argument
       console.log("jvmPid -> ", jvmPid);
       process.kill(jvmPid, 'SIGKILL');
-      fs.unlinkSync(applicationPidFile);
     }
     win.loadFile('./res/html/shutdown.html');
     setTimeout(function () {
