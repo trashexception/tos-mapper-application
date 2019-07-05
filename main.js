@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow, Menu, dialog, net } = electron;
 const path = require('path');
 
 const child = require('child_process').spawn;
@@ -55,34 +55,38 @@ function processRun() {
 }
 
 function createMainWindow() {
- 
-    mainWindow = new BrowserWindow({
-      width: 1220,
-      height: 1030,
-  
-      webPreferences: {
-        nodeIntegration: true,
-        webviewTag: true
-      }
-    });
-    mainWindow.loadFile("./res/html/main.html"); // and load the index.html of the app.
-    mainWindow.setMenu(null);  // 메뉴창 제거
 
 
-    // optionWindow = new BrowserWindow({
-    //   width: 500,
-    //   height: 150,
-    //   webPreferences: {
 
-    //   },
-    //   // transparent: true,
-    //   // frame: false
-    // })
+
+
+  mainWindow = new BrowserWindow({
+    width: 1220,
+    height: 1030,
+
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true
+    }
+  });
+  mainWindow.loadFile("./res/html/main.html"); // and load the index.html of the app.
+  mainWindow.setMenu(null);  // 메뉴창 제거
+
+
+  // optionWindow = new BrowserWindow({
+  //   width: 500,
+  //   height: 150,
+  //   webPreferences: {
+
+  //   },
+  //   // transparent: true,
+  //   // frame: false
+  // })
   // optionWindow.loadFile("./res/html/option.html");
   // optionWindow.setMenu(null);
   // optionWindow.hide();
 
-  
+
 
   mainWindow.webContents.openDevTools();   // 개발자 도구를 엽니다.
   // optionWindow.webContents.openDevTools();
@@ -118,15 +122,147 @@ function createMainWindow() {
   //   optionWindow = null;
   // });
 
+
+
+
+
+  // define template
+  const template = [
+    {
+      label: '옵션',
+      submenu: [
+        {
+          label: '맵 이름 영역지정',
+          click: function () {
+            createOptionWindow();
+          },
+        }
+      ]
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+
+
 }
 
 // function createoptionWindow () {
- 
+
 //   let displays = electron.screen.getAllDisplays()
 //   let externalDisplay = displays.find((display) => {
 //     return display.bounds.x !== 0 || display.bounds.y !== 0
 //   })
 // }
+
+function createOptionWindow() {
+
+  // const request = net.request({
+  //   method: "POST",
+  //   protocol: "http",
+  //   hostname: "localhost",
+  //   port: 31234,
+  //   path: "/api/application/position"
+  // });
+
+  const request = net.request("http://localhost:31234/api/application/position");
+  let responseDataSet = {
+    code: 1,
+    message: "",
+    data: {
+      x: 0.0,
+      y: 0.0,
+      width: 0.0,
+      height: 0.0
+    }
+  };
+
+  request.on('response', (response) => {
+    console.log(`STATUS: ${response.statusCode}`);
+
+    response.on('error', (error) => {
+      console.log(`ERROR: ${JSON.stringify(error)}`);
+    });
+
+    response.on('data', (chunk) => {
+      console.log("data ->", JSON.parse(chunk));
+      responseDataSet = JSON.parse(chunk);
+
+
+      
+
+
+      // create Window, if application is running
+      switch (responseDataSet.code) {
+        case 1:
+          console.log(responseDataSet.message);
+          dialog.showMessageBox(null, {
+            type: 'info',
+            buttons: ['OK'],
+            title: '확인',
+            message: responseDataSet.message,
+            detail: '켜주세요.',
+          }
+
+
+
+          );
+
+
+          break;
+        case 0:
+          // alert(responseDataSet.message);
+          optionWindow = new BrowserWindow({
+            x: responseDataSet.data.x,
+            y: responseDataSet.data.y,
+            width: responseDataSet.data.width,
+            height: responseDataSet.data.height,
+            webPreferences: {
+              nodeIntegration: true,
+              webviewTag: true
+            },
+            alwaysOnTop: true,
+            resizable: false,
+            transparent: true,
+            frame: false
+          });
+          optionWindow.loadFile("./res/html/option.html");
+          optionWindow.setMenu(null);
+
+          optionWindow.webContents.openDevTools();
+
+          optionWindow.on("closed", function (e) {
+            optionWindow = null;
+          });
+
+
+
+          break;
+      }
+
+
+    });
+
+  });
+  request.end();
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 // 이 메서드는 Electron이 초기화를 마치고 
 // 브라우저 창을 생성할 준비가 되었을 때  호출될 것입니다.
@@ -135,7 +271,6 @@ app.on('ready', () => {
 
   processRun();
   createMainWindow();
-  
 
 });
 
@@ -159,5 +294,10 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+
+
+
+
 
 // 이 파일 안에 당신 앱 특유의 메인 프로세스 코드를 추가할 수 있습니다. 별도의 파일에 추가할 수도 있으며 이 경우 require 구문이 필요합니다.

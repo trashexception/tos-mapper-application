@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+
+<head>
+    <style>
+        #canvas {
+            width: 100%;
+            height: 100%;
+            border: 0px solid transparent;
+            overflow: hidden;
+        }
+
+        .rectangle {
+            border: 1px solid rgba(255, 0, 0, 1);
+            position: absolute;
+        }
+
+        body {
+            background-color: rgba(255, 255, 0, 0.3);
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <!-- <div>hello world</div> -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous">
+        </script>
+    
+    
+    <script>
+
+
+
+        function initDraw(canvas) {
+            console.log("window.innerWidth", window.innerWidth, "window.innerHeight", window.innerHeight)
+            canvas.width = window.innerWidth ;
+            canvas.height = window.innerHeight ;
+
+            var ctx = canvas.getContext('2d');
+            //Variables
+            var canvasx = $(canvas).offset().left;
+            var canvasy = $(canvas).offset().top;
+            var start_mousex = start_mousey = 0;
+            var mousex = mousey = 0;
+            var mousedown = false;
+
+            //Mousedown
+            $(canvas).mousedown(function (e) {
+                if (mousedown)
+                    return;
+                start_mousex = parseInt(e.clientX);
+                start_mousey = parseInt(e.clientY);
+                mousedown = true;
+            });
+
+            //Mouseup
+            $(canvas).mouseup(function (e) {
+                mousedown = false;
+            });
+
+            //Mousemove
+            $(canvas).on('mousemove', function (e) {
+                mousex = parseInt(e.clientX);
+                mousey = parseInt(e.clientY);
+                if (mousedown) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); //clear canvas
+                    ctx.beginPath();
+                    var width = mousex - start_mousex;
+                    var height = mousey - start_mousey;
+                    ctx.strokeStyle = 'blue';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(start_mousex, start_mousey, width, height);
+                    console.log(start_mousex, start_mousey, width, height)
+                    ctx.closePath();
+                    // ctx.stroke();
+                }
+                //Output
+                // console.log('current: '+mousex+', '+mousey+'<br/>last: '+last_mousex+', '+last_mousey+'<br/>mousedown: '+mousedown);
+            });
+        }
+    </script>
+
+
+    <script>
+            window.onload = () => {
+                initDraw(document.querySelector("#canvas"));
+            }
+    </script>
+</body>
+
+</html>

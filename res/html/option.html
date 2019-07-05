@@ -7,6 +7,7 @@
             width: 100%;
             height: 100%;
             border: 0px solid transparent;
+            cursor: crosshair;
             overflow: hidden;
         }
 
@@ -27,7 +28,7 @@
 </head>
 
 <body>
-    <div id="canvas"></div>
+    <canvas id="canvas"></canvas>
     <!-- <div>hello world</div> -->
     <script>
         if (typeof module === 'object') {
@@ -37,14 +38,15 @@
             module = window.module;
         }
     </script>
-    <script src="../js/optionRenderer.js"></script>
+   
 
-
+    <script src="../js/optionRenderer.js">
+    </script>
     <script>
-        window.onload = () => {
-            initDraw(document.querySelector("#canvas"));
+        
+         window.onload = () => {
+            initDraw($("#canvas")[0]);
         }
-
     </script>
 </body>
 
