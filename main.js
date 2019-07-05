@@ -1,17 +1,24 @@
-const { app, BrowserWindow } = require('electron');
-const mapper_parametersFile = require(app.getAppPath() + "/res/json/mapper_parameters.json");
+const electron = require('electron');
+const { app, BrowserWindow } = electron;
+const path = require('path');
+
 const child = require('child_process').spawn;
 const process = require('process');
 const fs = require('fs');
 const isRunning = require('is-running')
 
+const mapper_parametersFile = require(app.getAppPath() + "/res/json/mapper_parameters.json");
+// const executablePath = app.getAppPath() + "/mapper/tos-mapper-otsu.exe";
 const executablePath = app.getAppPath() + "/mapper/tos-mapper.exe";
 const applicationPidFile = app.getAppPath() + "/mapper/application.pid";
 
 // window 객체는 전역 변수로 유지. 이렇게 하지 않으면, 
 // 자바스크립트 객체가 가비지 콜렉트될 때 자동으로 창이 닫힐 것입니다.
-let win;
+let mainWindow;
+let optionWindow;
 let childProcesser;;
+
+app.disableHardwareAcceleration()
 
 function processRun() {
   // let mapper_parameters = ["--user.x=848", "--user.y=26", "--user.width=232", "--user.height=31", "--user.tessdata=" + app.getAppPath() + "\\mapper\\tessdata"];
@@ -47,26 +54,40 @@ function processRun() {
   }
 }
 
-function createWindow() {
+function createMainWindow() {
+ 
+    mainWindow = new BrowserWindow({
+      width: 1220,
+      height: 1030,
+  
+      webPreferences: {
+        nodeIntegration: true,
+        webviewTag: true
+      }
+    });
+    mainWindow.loadFile("./res/html/main.html"); // and load the index.html of the app.
+    mainWindow.setMenu(null);  // 메뉴창 제거
 
-  // 브라우저 창을 생성합니다.
-  win = new BrowserWindow({
-    width: 1220,
-    height: 1030,
 
-    webPreferences: {
-      nodeIntegration: true,
-      webviewTag: true
-    }
-  });
+    // optionWindow = new BrowserWindow({
+    //   width: 500,
+    //   height: 150,
+    //   webPreferences: {
 
+    //   },
+    //   // transparent: true,
+    //   // frame: false
+    // })
+  // optionWindow.loadFile("./res/html/option.html");
+  // optionWindow.setMenu(null);
+  // optionWindow.hide();
 
-  win.loadFile("./res/html/main.html"); // and load the index.html of the app.
-  win.setMenu(null);  // 메뉴창 제거
+  
 
-  // win.webContents.openDevTools();   // 개발자 도구를 엽니다.
+  mainWindow.webContents.openDevTools();   // 개발자 도구를 엽니다.
+  // optionWindow.webContents.openDevTools();
 
-  win.on('close', function (e) { //   <---- Catch close event
+  mainWindow.on('close', function (e) { //   <---- Catch close event
     e.preventDefault();
     console.log("applicationPidFile Path ->", applicationPidFile);
     if (fs.existsSync(applicationPidFile)) {
@@ -76,23 +97,36 @@ function createWindow() {
       process.kill(jvmPid, 'SIGKILL');
       fs.unlinkSync(applicationPidFile);
     }
-    win.loadFile('./res/html/shutdown.html');
+    mainWindow.loadFile('./res/html/shutdown.html');
     setTimeout(function () {
-      win.destroy();
+      mainWindow.destroy();
     }, 2000);
   });
 
 
   // 창이 닫힐 때 발생합니다
-  win.on('closed', () => {
+  mainWindow.on('closed', () => {
     // window 객체에 대한 참조해제. 여러 개의 창을 지원하는 앱이라면 
     // 창을 배열에 저장할 수 있습니다. 이곳은 관련 요소를 삭제하기에 좋은 장소입니다.
 
-    win = null;
-  }
-  );
+    mainWindow = null;
+
+    // optionWindow.destroy();
+  });
+
+  // optionWindow.on('closed',() => {
+  //   optionWindow = null;
+  // });
 
 }
+
+// function createoptionWindow () {
+ 
+//   let displays = electron.screen.getAllDisplays()
+//   let externalDisplay = displays.find((display) => {
+//     return display.bounds.x !== 0 || display.bounds.y !== 0
+//   })
+// }
 
 // 이 메서드는 Electron이 초기화를 마치고 
 // 브라우저 창을 생성할 준비가 되었을 때  호출될 것입니다.
@@ -100,7 +134,8 @@ function createWindow() {
 app.on('ready', () => {
 
   processRun();
-  createWindow();
+  createMainWindow();
+  
 
 });
 
@@ -120,7 +155,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // macOS에서는 dock 아이콘이 클릭되고 다른 윈도우가 열려있지 않았다면
   // 앱에서 새로운 창을 다시 여는 것이 일반적입니다.
-  if (win === null) {
+  if (mainWindow === null) {
     createWindow()
   }
 })
