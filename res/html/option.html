@@ -1,35 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <style>
-        #canvas {
-            width: 100%;
-            height: 100%;
-            border: 0px solid transparent;
-            cursor: crosshair;
-            overflow: hidden;
-        }
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/option.css" />
 
-        .rectangle {
-            border: 1px solid rgba(255, 0, 0, 1);
-            position: absolute;
-        }
-
-        body {
-            background-color: rgba(255, 255, 0, 0.3);
-            margin: 0px;
-            padding: 0px;
-        }
-    </style>
-    <script>
-
-    </script>
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
-    <!-- <div>hello world</div> -->
+    <div id="section">
+        <div id="buttons">
+            <button id="btn_save" class="btn btn-success" type="button">
+                저장
+            </button>
+            <button id="btn_close" class="btn btn-dark" type="button">
+                닫기
+            </button>
+        </div>
+        <div>
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+
     <script>
         if (typeof module === 'object') {
             window.module = module; module = undefined;
@@ -38,16 +31,13 @@
             module = window.module;
         }
     </script>
-   
-
-    <script src="../js/optionRenderer.js">
-    </script>
     <script>
-        
-         window.onload = () => {
-            initDraw($("#canvas")[0]);
-        }
+
+        const renderer = require("../js/optionRenderer.js");
     </script>
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script> -->
 </body>
 
 </html>

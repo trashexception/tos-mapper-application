@@ -7,3 +7,19 @@
     font-weight: bold;
     vertical-align: middle;
 }
+
+body {
+    overflow-x: hidden;
+}
+
+.top_bar {
+    width: 1200px;
+    position: relative; 
+    top: 0px;
+  }
+  .row_bar {
+    opacity: 0.5;
+    width: 1200px;
+    position: absolute; 
+    bottom: 0px;
+  }
