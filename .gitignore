@@ -88,6 +88,7 @@ typings/
 .dynamodb/
 
 #Project
+.vscode
 package-lock.json
 dist/
 mapper/tos-mapper.exe
