@@ -1,8 +1,7 @@
 const remote = require("electron").remote;
 const { app, dialog } = remote;
+const userdata = require("./userdataReadWrite.js");
 
-const storage = require("electron-json-storage");
-const storagePath = storage.setDataPath(app.getAppPath() + "/userdata");
 const $ = window.jQuery = require("jquery");
 const bootstrap = require("bootstrap");
 
@@ -10,7 +9,7 @@ let dialogOption_notSaved = {
     type: "info",
     title: "",
     message: "지정된 영역이 없습니다.",
-    button: ["확인"],    
+    button: ["확인"],
 }
 
 let mapnameSelection;
@@ -35,52 +34,18 @@ let mapnameRectangle = {
     }
 }
 
-function checkStorage() {
-    return new Promise((resolve, reject) => {
-        storage.has("selection_mapname", function (error, hasKey) {
-            if (error) {
-                reject(Error(error));
-            }
 
-            if (hasKey) {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-        });
-    });
-}
-
-function getStorage() {
-    return new Promise((resolve, reject) => {
-        storage.get("selection_mapname", (error, data) => {
-            if (error) {
-                reject(Error(error));
-            }
-            resolve(data);
-        });
-    });
-}
-
-function setStorage(data) {
-    return new Promise((resolve, reject) => {
-        storage.set("selection_mapname", data, (error, data) => {
-            if (error) {
-                reject(Error(error));
-            }
-
-            resolve(true);
-        });
-    });
-}
 
 async function initFiles() {
-    let hasStorage = await checkStorage();
+    let userdataPath = await userdata.setUserDataPath(app.getAppPath() + "/userdata");
+
+    let hasStorage = await userdata.checkStorage("selection_mapname");
     if (!hasStorage) {
-        await setStorage(mapnameRectangle.saved);
+        await userdata.setStorage("selection_mapname", mapnameRectangle.saved);
     }
-    mapnameSelection = await getStorage();
+    mapnameSelection = await userdata.getStorage("selection_mapname");
     mapnameRectangle.saved = mapnameSelection;
+    mapnameRectangle.temp = mapnameSelection;
 }
 
 function initButtons() {
@@ -92,9 +57,6 @@ function initButtons() {
     });
 
     $(btn_save).on("click", (e) => {
-
-
-
         if (mapnameRectangle.temp.x == null || mapnameRectangle.temp.y == null || (mapnameRectangle.temp.width == null || mapnameRectangle.temp.width == 0) || (mapnameRectangle.temp.height == null || mapnameRectangle.temp.height == 0)) {
             console.log("not saved");
             dialog.showMessageBox(null, dialogOption_notSaved);
@@ -117,7 +79,7 @@ function initButtons() {
             mapnameRectangle.saved = mapnameRectangle.adjust;
         }
         console.log(mapnameRectangle);
-        setStorage(mapnameRectangle.saved);
+        userdata.setStorage("selection_mapname", mapnameRectangle.saved);
     });
 }
 
@@ -141,13 +103,13 @@ function initDraw(canvas) {
 
     //canvas ready
     $(canvas).ready((e) => {
-        console.log("mapnameRectangle.saved =>",mapnameRectangle.saved);
-        
-        if (mapnameRectangle.saved.width == 0 || mapnameRectangle.saved.height == 0) {
+        console.log("mapnameRectangle.saved =>", mapnameRectangle.saved);
+
+        if ((mapnameSelection.width == 0 || mapnameSelection.height == 0) || (mapnameSelection.width === undefined || mapnameSelection.height === undefined)) {
             console.log("not saved");
             dialog.showMessageBox(null, dialogOption_notSaved);
         }
-        
+
         ctx.strokeStyle = "red";
         ctx.lineWidth = 1;
         ctx.strokeRect(mapnameRectangle.saved.x, mapnameRectangle.saved.y, mapnameRectangle.saved.width, mapnameRectangle.saved.height);
@@ -194,5 +156,5 @@ $(document).ready(async () => {
     await initFiles();
     await initButtons();
     await initDraw($("#canvas")[0]);
-    
+
 });

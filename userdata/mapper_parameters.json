@@ -1,0 +1,5 @@
+{
+    "mapperPath": "\\mapper\\tos-mapper.exe",
+    "pidPath": "\\mapper\\application.pid",
+    "tessdata": "\\mapper\\tessdata"
+}

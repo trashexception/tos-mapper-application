@@ -1,21 +1,21 @@
 const electron = require('electron');
-const { app, BrowserWindow, Menu, dialog, net } = electron;
+const { app, BrowserWindow, Menu, dialog, net, ipcMain } = electron;
 
 const child = require('child_process').spawn;
 const process = require('process');
 const fs = require('fs');
 const isRunning = require('is-running')
 
-const mapper_parametersJson = require(app.getAppPath() + "/res/json/mapper_parameters.json");
-const mapper_executablePath = app.getAppPath() + "/mapper/tos-mapper.exe";
-const mapper_applicationPidFile = app.getAppPath() + "/mapper/application.pid";
+const mapper_parameters = require(app.getAppPath() + "/userdata/mapper_parameters.json");
+const mapper_executablePath = app.getAppPath() + mapper_parameters.mapperPath;
+const mapper_applicationPidFile = app.getAppPath() + mapper_parameters.pidPath;
 
-let mapper_parameters = [
-  "--user.x=" + mapper_parametersJson.x,
-  "--user.y=" + mapper_parametersJson.y,
-  "--user.width=" + mapper_parametersJson.width,
-  "--user.height=" + mapper_parametersJson.height,
-  "--user.tessdata=" + app.getAppPath() + mapper_parametersJson.tessdata
+let applicationArguments = [
+  "--user.x=" + 0,
+  "--user.y=" + 0,
+  "--user.width=" + 0,
+  "--user.height=" + 0,
+  "--user.tessdata=" + app.getAppPath() + mapper_parameters.tessdata
 ];
 
 let mapper_API_applicationPosition = {
@@ -31,10 +31,20 @@ let childProcesser;;
 
 // app.disableHardwareAcceleration() // 하드웨어가속 disable
 
-function processRun() {
+async function initIpcEvent() {
+  ipcMain.on("request-runMapperApiApplicationPosition", async (event, arg) => {
+    console.log("ipcMain");
+    await runMapperApiApplicationPosition();
 
-  console.log("mapper_parameters ->", mapper_parameters);
-  childProcesser = child(mapper_executablePath, mapper_parameters);
+    event.sender.send("response-runMapperApiApplicationPosition", mapper_API_applicationPosition.api);
+  });
+}
+
+
+function processRun() {
+  console.log("run:",mapper_executablePath, applicationArguments )
+  
+  childProcesser = child(mapper_executablePath, applicationArguments);
   console.log("childProcesser.pid -> ", childProcesser.pid);
 
   while (true) {
@@ -68,7 +78,7 @@ function createMainWindow() {
   mainWindow.loadFile("./res/html/main.html"); // and load the index.html of the app.
   mainWindow.setMenu(null);  // 메뉴창 제거
 
-  mainWindow.webContents.openDevTools();   // 개발자 도구를 엽니다.
+  // mainWindow.webContents.openDevTools();   // 개발자 도구를 엽니다.
 
   mainWindow.on('close', function (e) { //   <---- Catch close event
     e.preventDefault();
@@ -105,7 +115,7 @@ function createMainWindow() {
         {
           label: '맵 이름 영역지정',
           click: async function () {
-            await runMapperApiApplicationPosition();
+            mapper_API_applicationPosition.api = await runMapperApiApplicationPosition(mapper_API_applicationPosition.url);
             createOptionWindow();
           },
         }
@@ -117,9 +127,9 @@ function createMainWindow() {
   Menu.setApplicationMenu(menu);
 }
 
-function runMapperApiApplicationPosition(param) {
+function runMapperApiApplicationPosition(url) {
   return new Promise((resolve, reject) => {
-    let request = net.request(mapper_API_applicationPosition.url);
+    let request = net.request(url);
 
     request.on('response', (response) => {
       console.log(`STATUS: ${response.statusCode}`);
@@ -130,10 +140,10 @@ function runMapperApiApplicationPosition(param) {
       });
 
       response.on('data', (chunk) => {
-        mapper_API_applicationPosition.api = JSON.parse(chunk);
-        console.log("data ->", mapper_API_applicationPosition.api);
+        let data = JSON.parse(chunk);
+        console.log("data->",data);
 
-        resolve("done");
+        resolve(data);
       });
     });
     request.end();
@@ -186,7 +196,7 @@ function createOptionWindow() {
       optionWindow.loadFile("./res/html/option.html");
       optionWindow.setMenu(null);
 
-      optionWindow.webContents.openDevTools();
+      // optionWindow.webContents.openDevTools();  // 개발자 도구를 연다.
 
       optionWindow.on("closed", function (e) {
         optionWindow = null;
@@ -202,7 +212,8 @@ function createOptionWindow() {
 // 어떤 API는 이 이벤트가 나타난 이후에만 사용할 수 있습니다.
 app.on('ready', async () => {
   await processRun();
-  createMainWindow();
+  // await initIpcEvent();
+  await createMainWindow();
   // createOptionWindow();
 
 });

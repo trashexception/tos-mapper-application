@@ -86,6 +86,10 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+#Project
 package-lock.json
 dist/
-mapper/
+mapper/tos-mapper.exe
+mapper/tessdata/kor.traineddata
+mapper/tessdata/kor_vert.traineddata
