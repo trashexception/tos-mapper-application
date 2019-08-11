@@ -1,8 +1,8 @@
-﻿# tos-mapper-application
+# tos-mapper-application
 ![main](/image/main.png)
 
 ## Release Note
-* v1.0; 첫 공개; [https://drive.google.com/open?id=1_g2Zuzwc4XjoLlbVjk2_VJMToBsYz91c](https://drive.google.com/open?id=1_g2Zuzwc4XjoLlbVjk2_VJMToBsYz91c)
+* v1.0; 첫 공개; [__다운로드__](https://drive.google.com/open?id=1_g2Zuzwc4XjoLlbVjk2_VJMToBsYz91c)
 
 ## 처음 실행하세요?
 1. [옵션] → [맵 이름 영역 지정]
