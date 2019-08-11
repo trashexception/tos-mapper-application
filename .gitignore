@@ -87,6 +87,9 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# git
+.git
+
 #Project
 .vscode
 package-lock.json
